@@ -174,8 +174,7 @@ public class ChomskifyOperation implements GrammarOperation {
         return result;
     }
 
-    private String replacedRhs(String rightSide, Map<Character, Character> termMap,
-                               SymbolAllocator allocator, List<Rule> result) {
+    private String replacedRhs(String rightSide, Map<Character, Character> termMap, SymbolAllocator allocator, List<Rule> result) {
         if (rightSide.length() < 2) return rightSide;
         StringBuilder sb = new StringBuilder();
         for (char c : rightSide.toCharArray()) {
