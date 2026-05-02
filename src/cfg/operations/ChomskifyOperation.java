@@ -1,4 +1,5 @@
 package cfg.operations;
 
-public class ChomskifyOperation {
+public class ChomskifyOperation{
+
 }
