@@ -58,6 +58,13 @@ public class GrammarStore {
     public Grammar store(Grammar g) {
         return register(g.getStartSymbol(), new ArrayList<>(g.getRules()));
     }
-
+    /**
+     * Retrieves a grammar by its unique identifier.
+     * @param id the grammar id
+     * @return the Grammar, or {@code null} if not found
+     */
+    public Grammar get(int id) {
+        return grammars.get(id);
+    }
 
 }
