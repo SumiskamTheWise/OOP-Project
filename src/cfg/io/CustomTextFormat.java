@@ -78,7 +78,7 @@ public class CustomTextFormat implements GrammarFileFormat {
                     }
                     i++;
                 }
-                store.registerNew(startSymbol, rules);
+                store.register(startSymbol, rules);
                 i++; // skip END
             } else {
                 i++;

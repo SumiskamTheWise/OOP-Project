@@ -41,6 +41,6 @@ public class IterationOperation implements GrammarOperation {
 
         rules.addAll(grammar.getRules());
 
-        return store.registerNew(newStart, rules);
+        return store.register(newStart, rules);
     }
 }

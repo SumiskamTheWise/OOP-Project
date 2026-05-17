@@ -31,10 +31,8 @@ public class ChomskifyOperation implements GrammarOperation {
         //Duplicate
         List<Rule> deduped = new ArrayList<>(new LinkedHashSet<>(rules));
 
-        return store.registerNew(newStart, deduped);
+        return store.register(newStart, deduped);
     }
-
-
 
     // Step 2
     private List<Rule> eliminateEpsilob(List<Rule> rules, char protectedStart) {

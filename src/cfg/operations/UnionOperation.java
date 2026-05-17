@@ -53,7 +53,7 @@ public class UnionOperation implements GrammarOperation {
             rules.add(new Rule(newLhs, newRhs));
         }
 
-        return store.registerNew(newStart, rules);
+        return store.register(newStart, rules);
     }
 
     private Map<Character, Character> buildRemap(Grammar g2, Grammar g1, SymbolAllocator allocator) {
