@@ -11,7 +11,6 @@ public class ListCommand implements Command {
 
     @Override
     public void execute(String[] args, AppContext context) {
-        requireOpen(context);
         if (context.getStore().isEmpty()) {
             System.out.println("No grammars loaded.");
             return;
@@ -21,15 +20,8 @@ public class ListCommand implements Command {
             System.out.println("  #" + g.getId() + "  (start: " + g.getStartSymbol() + ", rules: " + g.getRules().size() + ")");
         }
     }
-
     @Override
     public String usage() {
-        return "lists identifiers of all loaded grammars";
-    }
-
-    private void requireOpen(AppContext context) {
-        if (!context.getSession().isOpen()) {
-            throw new IllegalStateException("No file is currently open.");
-        }
+        return "list lists identifiers of all loaded grammars";
     }
 }
