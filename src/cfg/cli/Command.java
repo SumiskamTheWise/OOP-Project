@@ -5,7 +5,6 @@ package cfg.cli;
  * <p>
  * Follows the Command pattern: each command encapsulates the action
  * and knows how to execute itself given the application context.
- * </p>
  */
 public interface Command {
 
@@ -23,4 +22,17 @@ public interface Command {
      * @return usage description
      */
     String usage();
+
+    /**
+     * Whether this command requires an open file session before it can run.
+     * <p>
+     * Defaults to {@code true}. Commands that can run without an open file
+     * (like {@code open}, {@code help}, {@code exit}) should override this to
+     * return {@code false}.
+     *
+     * @return {@code true} if the command needs an open session
+     */
+    default boolean requiresOpenSession() {
+        return true;
+    }
 }

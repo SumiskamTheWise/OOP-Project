@@ -31,4 +31,9 @@ public class HelpCommand implements Command {
     public String usage() {
         return "prints this information";
     }
+
+    @Override
+    public boolean requiresOpenSession() {
+        return false;
+    }
 }

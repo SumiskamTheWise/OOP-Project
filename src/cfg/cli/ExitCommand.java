@@ -4,7 +4,6 @@ package cfg.cli;
  * Exits the program.
  * <p>
  * Usage: {@code exit}
- * </p>
  */
 public class ExitCommand implements Command {
 
@@ -17,5 +16,10 @@ public class ExitCommand implements Command {
     @Override
     public String usage() {
         return "exits the program";
+    }
+
+    @Override
+    public boolean requiresOpenSession() {
+        return false;
     }
 }

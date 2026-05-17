@@ -7,7 +7,6 @@ import java.io.IOException;
  * If the file does not exist, an empty session is started.
  * <p>
  * Usage: {@code open <filepath>}
- * </p>
  */
 public class OpenCommand implements Command {
 
@@ -35,5 +34,10 @@ public class OpenCommand implements Command {
     @Override
     public String usage() {
         return "open <file>   opens <file>";
+    }
+
+    @Override
+    public boolean requiresOpenSession() {
+        return false;
     }
 }
