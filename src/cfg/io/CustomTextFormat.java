@@ -24,8 +24,8 @@ import java.util.*;
  * S -> AB
  * END
  * </pre>
- * Each grammar block starts with GRAMMAR, followed by START,
- * then one rule per line in the form LHS -> RHS, and ends with END.
+ * Each grammar block starts with {@code GRAMMAR}, followed by {@code START <symbol>},
+ * then one rule per line in the form {@code LHS -> RHS}, and ends with {@code END}.
  */
 public class CustomTextFormat implements GrammarFileFormat {
 
@@ -36,13 +36,19 @@ public class CustomTextFormat implements GrammarFileFormat {
 
     @Override
     public void load(String filePath, GrammarStore store) throws IOException {
-        List<String> lines = Files.readAllLines(Paths.get(filePath));
+        List<String> raw = Files.readAllLines(Paths.get(filePath), java.nio.charset.StandardCharsets.UTF_8);
+        // Strip carriage returns so Windows-created files (\r\n) parse correctly on any OS
+        List<String> lines = new ArrayList<>();
+        for (String line : raw) {
+            lines.add(line.replace("\r", ""));
+        }
         parseGrammars(lines, store);
     }
 
     @Override
     public void saveAll(String filePath, GrammarStore store) throws IOException {
-        try (PrintWriter pw = new PrintWriter(new FileWriter(filePath))) {
+        try (PrintWriter pw = new PrintWriter(new java.io.OutputStreamWriter(
+                new java.io.FileOutputStream(filePath), java.nio.charset.StandardCharsets.UTF_8))) {
             for (Grammar g : store.getAll()) {
                 writeGrammar(pw, g);
             }
@@ -51,14 +57,14 @@ public class CustomTextFormat implements GrammarFileFormat {
 
     @Override
     public void saveSingle(String filePath, Grammar grammar) throws IOException {
-        try (PrintWriter pw = new PrintWriter(new FileWriter(filePath))) {
+        try (PrintWriter pw = new PrintWriter(new java.io.OutputStreamWriter(
+                new java.io.FileOutputStream(filePath), java.nio.charset.StandardCharsets.UTF_8))) {
             writeGrammar(pw, grammar);
         }
     }
 
 
     // Private helpers
-
     private void parseGrammars(List<String> lines, GrammarStore store) {
         int i = 0;
         while (i < lines.size()) {

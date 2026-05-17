@@ -25,6 +25,6 @@ public class ConcatCommand implements Command {
 
     @Override
     public String usage() {
-        return "concat <id1> <id2>   concatenation of grammars #<id1> and #<id2>";
+        return "concat <id1> <id2>          concatenation of grammars #<id1> and #<id2>";
     }
 }
