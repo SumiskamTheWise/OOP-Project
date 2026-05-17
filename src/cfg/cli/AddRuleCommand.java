@@ -10,6 +10,7 @@ import cfg.model.Rule;
  * <p>
  * Example: {@code addRule 1 S -> aSb}
  */
+
 public class AddRuleCommand implements Command {
 
     @Override

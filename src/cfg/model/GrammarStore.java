@@ -4,7 +4,7 @@ import java.util.*;
 
 /**
  * In-memory store for all loaded grammars.
- * <p><p/>
+ * <p>
  * Manages unique grammar identifiers and provides access to stored grammars.
  * This is a singleton-style registry used by the application session.
  */
@@ -54,15 +54,18 @@ public class GrammarStore {
         return Collections.unmodifiableCollection(grammars.values());
     }
 
+    /** @return {@code true} if no grammars are currently stored */
     public boolean isEmpty() {
         return grammars.isEmpty();
     }
 
+    /** Removes all grammars and resets the id counter to 1. */
     public void clear() {
         grammars.clear();
         nextId = 1;
     }
 
+    /** @return the number of grammars currently stored */
     public int size() {
         return grammars.size();
     }

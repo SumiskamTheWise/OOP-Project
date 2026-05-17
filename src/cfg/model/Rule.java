@@ -1,18 +1,26 @@
 package cfg.model;
+
 /**
  * Represents a single production rule in a Context-Free Grammar.
- * <p></p>
+ * <p>
  * A rule has the form: {@code A -> w} where {@code A} is a non-terminal (uppercase)
  * and {@code w} is a string of terminals and/or non-terminals, or the empty string
  * represented by {@code "eps"}.
  */
 public class Rule {
+
     /** Sentinel string representing the empty production (epsilon). */
     public static final String EPSILON = "eps";
 
     private final char leftSide;
     private final String rightSide;
 
+    /**
+     * Constructs a production rule.
+     * @param leftSide  the non-terminal on the left side of the rule
+     * @param rightSide the string on the right side; use {@code "eps"} for epsilon
+     * @throws IllegalArgumentException if leftSide is not an uppercase letter
+     */
     public Rule(char leftSide, String rightSide) {
         if (!Character.isUpperCase(leftSide)) {
             throw new IllegalArgumentException("Left side of rule must be a non-terminal (uppercase): " + leftSide);
@@ -21,13 +29,16 @@ public class Rule {
         this.rightSide = rightSide;
     }
 
+    /** @return the non-terminal on the left side of this rule */
     public char getLeftSide() {
         return leftSide;
     }
 
+    /** @return the right-hand side string of this rule */
     public String getRightSide() {
         return rightSide;
     }
+
     /**
      * Returns whether this rule is an epsilon (empty) production.
      * @return true if this rule produces epsilon
@@ -38,13 +49,16 @@ public class Rule {
 
     /**
      * Returns whether the right-hand side is a single terminal symbol.
+     *
      * @return true if right side is exactly one terminal character
      */
     public boolean isSingleTerminal() {
         return rightSide.length() == 1 && (Character.isLowerCase(rightSide.charAt(0)) || Character.isDigit(rightSide.charAt(0)));
     }
+
     /**
      * Returns whether the right-hand side is exactly two non-terminals (CNF form).
+     *
      * @return true if right side is two uppercase letters
      */
     public boolean isTwoNonTerminals() {

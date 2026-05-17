@@ -1,7 +1,6 @@
 package cfg.cli;
 
 import cfg.model.Grammar;
-
 import java.io.IOException;
 
 /**
