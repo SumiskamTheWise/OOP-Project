@@ -9,12 +9,14 @@ import java.util.*;
  * Implements the CYK (Cocke-Younger-Kasami) algorithm to determine whether a
  * word belongs to the language of a Context-Free Grammar.
  * <p>
- * The grammar MUST be in Chomsky Normal Form before running CYK.
- * If it is not, this operation will automatically apply ChomskifyOperation
+ * The grammar <b>must be in Chomsky Normal Form</b> before running CYK.
+ * If it is not, this operation will automatically apply {@link ChomskifyOperation}
  * on an internal copy (without storing the converted grammar).
- * </p>
  */
 public class CykOperation implements GrammarOperation {
+
+    /** Creates a new CykOperation. */
+    public CykOperation() {}
 
     private final ChomskifyOperation chomskify = new ChomskifyOperation();
     private final IsChomsky isChomsky = new IsChomsky();
@@ -27,17 +29,22 @@ public class CykOperation implements GrammarOperation {
      * @return true if {@code word} is in L(grammar)
      */
     public boolean accepts(Grammar grammar, String word) {
-        // Convert to CNF internally if needed
-        Grammar cnf = ensureCnf(grammar);
-
-        // Handle empty word
+        // Handle empty word BEFORE converting to CNF, because the conversion
+        // introduces a new start symbol (S₀) and may rewrite the epsilon rule.
+        // Epsilon membership depends solely on whether the original start symbol
+        // can derive ε — which ChomskifyOperation preserves via S₀ → eps, but
+        // checking on the original is simpler and always correct.
         if (word.isEmpty()) {
-            return canDeriveEpsilon(cnf);
+            return canDeriveEpsilonOriginal(grammar);
         }
+
+        // Convert to CNF internally if needed (for non-empty words)
+        Grammar cnf = ensureCnf(grammar);
 
         int n = word.length();
         // table[i][j] = set of non-terminals that derive word[i..j]
-        @SuppressWarnings("unchecked") Set<Character>[][] table = new Set[n][n];
+        @SuppressWarnings("unchecked")
+        Set<Character>[][] table = new Set[n][n];
         for (int i = 0; i < n; i++)
             for (int j = 0; j < n; j++)
                 table[i][j] = new HashSet<>();
@@ -69,10 +76,12 @@ public class CykOperation implements GrammarOperation {
                 }
             }
         }
+
         return table[0][n - 1].contains(cnf.getStartSymbol());
     }
 
     // Private helpers
+
     private Grammar ensureCnf(Grammar grammar) {
         if (isChomsky.check(grammar)) return grammar;
         // Use a temporary store just for the conversion
@@ -80,10 +89,35 @@ public class CykOperation implements GrammarOperation {
         return chomskify.apply(grammar, tempStore);
     }
 
-    private boolean canDeriveEpsilon(Grammar cnf) {
-        for (Rule r : cnf.getRules()) {
-            if (r.getLeftSide() == cnf.getStartSymbol() && r.isEpsilon()) return true;
+    private boolean canDeriveEpsilonOriginal(Grammar grammar) {
+        // Check transitively: collect all nullable non-terminals, then see if
+        // the start symbol is among them.
+        Set<Character> nullable = new HashSet<>();
+        // Seed: any non-terminal with a direct eps rule
+        for (Rule r : grammar.getRules()) {
+            if (r.isEpsilon()) nullable.add(r.getLeftSide());
         }
-        return false;
+        // Propagate: A -> B₁B₂...Bₙ where every Bᵢ is nullable ⟹ A is nullable
+        boolean changed = true;
+        while (changed) {
+            changed = false;
+            for (Rule r : grammar.getRules()) {
+                if (nullable.contains(r.getLeftSide())) continue;
+                if (!r.isEpsilon() && !r.isSingleTerminal()) {
+                    boolean allNullable = true;
+                    for (char c : r.getRightSide().toCharArray()) {
+                        if (!Character.isUpperCase(c) || !nullable.contains(c)) {
+                            allNullable = false;
+                            break;
+                        }
+                    }
+                    if (allNullable) {
+                        nullable.add(r.getLeftSide());
+                        changed = true;
+                    }
+                }
+            }
+        }
+        return nullable.contains(grammar.getStartSymbol());
     }
 }
